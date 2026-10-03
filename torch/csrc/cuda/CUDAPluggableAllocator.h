@@ -19,6 +19,11 @@ TORCH_CUDA_CPP_API std::shared_ptr<
 createCustomAllocator(
     std::function<void*(size_t, int, cudaStream_t)> alloc_fn,
     std::function<void(void*, size_t, int, cudaStream_t)> free_fn);
+TORCH_CUDA_CPP_API std::shared_ptr<
+    c10::cuda::CUDACachingAllocator::CUDAAllocator>
+createPythonAllocator(
+    std::function<void*(size_t, int, cudaStream_t)> alloc_fn,
+    std::function<void(void*, size_t, int, cudaStream_t)> free_fn);
 TORCH_CUDA_CPP_API void changeCurrentAllocator(
     const std::shared_ptr<c10::cuda::CUDACachingAllocator::CUDAAllocator>&
         allocator);
@@ -163,7 +168,6 @@ struct TORCH_CUDA_CPP_API CUDAPluggableAllocator
   std::mutex allocator_mutex_;
   // We do the bookkeeping here in order to simplify custom allocators
   std::unordered_map<void*, _AllocationMetadata> allocation_metadata_;
-
   bool initialized_ = false;
 };
 } // namespace torch::cuda::CUDAPluggableAllocator
